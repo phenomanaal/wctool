@@ -1,0 +1,10 @@
+# Ignore Python cache directories
+__pycache__/
+.pytest_cache/
+
+# Ignore compiled Python files
+*.py[cod]
+
+# Other ignores
+*.env
+*.DS_Store
