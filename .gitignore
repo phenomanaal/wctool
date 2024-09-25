@@ -8,3 +8,5 @@ __pycache__/
 # Other ignores
 *.env
 *.DS_Store
+
+tests/test.txt
