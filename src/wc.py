@@ -3,17 +3,7 @@ from pathlib import Path
 import sys
 import argparse
 
-class WCCounter:
-    def byte_count(self, *args, **kwargs) -> int:
-        pass
-    def line_count(self, *args, **kwargs) -> int:
-        pass
-    def word_count(self, *args, **kwargs) -> int:
-        pass
-    def character_count(self, *args, **kwargs) -> int:
-        pass
-
-class FileCounter(WCCounter):
+class FileCounter:
     def __init__(self, filepath: str | Path):
         self.filepath = Path(filepath).resolve()
         with open(self.filepath, "r", encoding="utf-8") as f:
@@ -37,7 +27,7 @@ class FileCounter(WCCounter):
     def character_count(self) -> int:
         return len(self.file_text.replace('\r\n', '\n'))
     
-class StringCounter(WCCounter):
+class StringCounter:
     def __init__(self, content: str):
         self.content = content
 
