@@ -3,77 +3,88 @@ from pathlib import Path
 import sys
 import argparse
 
-def byte_count(filepath: str | Path = None, content: str = None) -> int:   
+class WCCounter:
+    def byte_count(self, *args, **kwargs) -> int:
+        pass
+    def line_count(self, *args, **kwargs) -> int:
+        pass
+    def word_count(self, *args, **kwargs) -> int:
+        pass
+    def character_count(self, *args, **kwargs) -> int:
+        pass
+
+class FileCounter(WCCounter):
+    def __init__(self, filepath: str | Path):
+        self.filepath = Path(filepath).resolve()
+        with open(self.filepath, "r", encoding="utf-8") as f:
+            self.file_text = f.read()
+        super().__init__()
+
+    @property
+    def byte_count(self):
+        return self.filepath.stat().st_size
     
-    if filepath:
-        return Path(filepath).stat().st_size
-    else:
-        return len(content.encode('utf-8'))
-
-def line_count(filepath: str | Path = None, content: str = None) -> int:
-
-    if filepath:
-        filepath = Path(filepath).resolve()
-        
-        with open(filepath, 'r', encoding='utf-8') as f:
+    @property
+    def line_count(self):
+        with open(self.filepath, 'r', encoding='utf-8') as f:
             return sum(1 for line in f)
-    else:
-        return len(content.splitlines())
+
+    @property
+    def word_count(self):
+        return len(self.file_text.split())
     
-def word_count(filepath: str | Path = None, content: str = None) -> int:
-
-    if filepath:
-        filepath = Path(filepath).resolve()
-
-        with open(filepath, 'r', encoding='utf-8') as f:
-            text_file = f.read()
-
-        return len(text_file.split())
-    else:
-        return len(content.split())
-
-def character_count(filepath: str | Path = None, content: str = None) -> int:
-    if filepath:
-        filepath = Path(filepath).resolve()
-
-        with open(filepath, 'r', encoding='utf-8') as f:
-            text_file = f.read()
-        text_file = text_file.replace('\r\n', '\n')
-
-        return len(text_file)
-    else:
-        return len(content)
+    @property
+    def character_count(self) -> int:
+        return len(self.file_text.replace('\r\n', '\n'))
     
+class StringCounter(WCCounter):
+    def __init__(self, content: str):
+        self.content = content
 
+    @property
+    def byte_count(self):
+        return len(self.content.encode('utf-8'))
+    
+    @property
+    def line_count(self):
+        return len(self.content.splitlines())
+    
+    @property
+    def word_count(self):
+        return len(self.content.split())
+    
+    @property
+    def character_count(self) -> int:
+        return len(self.content)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Process some command-line arguments.")
     parser.add_argument("-l", "--lines", action="store_true", help="lines flag")
     parser.add_argument("-w", "--words", action="store_true", help="word flag")
     parser.add_argument("-c", "--characters", action="store_true", help="character flag")
-    parser.add_argument("-f", "--filepath", type=str, required=False, help="The first argument")
+    parser.add_argument("filepath", nargs='?', type=str, help="The first argument (optional filepath)")
    
     args = parser.parse_args()
-    if args.filepath:
-        inputs = { "filepath": Path(args.filepath) }
-    else:
-        inputs = { "content": sys.stdin.read() }
 
-    display_num: str
     display_file: str
+    display_num: str
+
     if args.filepath:
         display_file = args.filepath
+        counter = FileCounter(args.filepath)
     else:
         display_file = ""
+        counter = StringCounter(sys.stdin.read())   
+        
 
     if args.lines:
-        display_num = str(line_count(**inputs))
+        display_num = str(counter.line_count)
     elif args.words:
-        display_num = str(word_count(**inputs))
+        display_num = str(counter.word_count)
     elif args.characters:
-        display_num = str(character_count(**inputs))
+        display_num = str(counter.character_count)
     else:
-        display_num = f"{line_count(**inputs)} {word_count(**inputs)} {byte_count(**inputs)}"
+        display_num = f"{counter.line_count} {counter.word_count} {counter.byte_count}"
 
     print(display_num, display_file)
     
