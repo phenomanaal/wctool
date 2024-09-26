@@ -53,7 +53,8 @@ def main():
     parser = argparse.ArgumentParser(description="Process some command-line arguments.")
     parser.add_argument("-l", "--lines", action="store_true", help="lines flag")
     parser.add_argument("-w", "--words", action="store_true", help="word flag")
-    parser.add_argument("-c", "--characters", action="store_true", help="character flag")
+    parser.add_argument("-m", "--multibyte", action="store_true", help="character flag")
+    parser.add_argument("-c", "--count", action="store_true", help="byte flag")
     parser.add_argument("filepath", nargs='?', type=str, help="The first argument (optional filepath)")
    
     args = parser.parse_args()
@@ -77,12 +78,12 @@ def main():
         display_num = str(counter.line_count)
     elif args.words:
         display_num = str(counter.word_count)
-    elif args.characters:
+    elif args.multibyte:
         display_num = str(counter.character_count)
+    elif args.count:
+        display_num = str(counter.byte_count)
     else:
         display_num = f"{counter.line_count} {counter.word_count} {counter.byte_count}"
-
-    breakpoint()
 
     print(display_num, display_file)
 
