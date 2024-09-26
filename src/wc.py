@@ -49,7 +49,7 @@ class StringCounter:
     def character_count(self) -> int:
         return len(self.content)
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description="Process some command-line arguments.")
     parser.add_argument("-l", "--lines", action="store_true", help="lines flag")
     parser.add_argument("-w", "--words", action="store_true", help="word flag")
@@ -82,5 +82,10 @@ if __name__ == "__main__":
     else:
         display_num = f"{counter.line_count} {counter.word_count} {counter.byte_count}"
 
+    breakpoint()
+
     print(display_num, display_file)
-    
+
+
+if __name__ == "__main__":
+    main()
