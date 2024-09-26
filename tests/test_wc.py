@@ -38,3 +38,8 @@ def test_string_counter_word_count(string_counter):
 
 def test_file_counter_character_count(string_counter):
     assert string_counter.character_count == 332146
+
+# test errors
+def test_file_counter_file_does_not_exist():
+    with pytest.raises(FileNotFoundError) as exc_info:
+        FileCounter(Path(__file__).resolve().parent / "blah.txt")

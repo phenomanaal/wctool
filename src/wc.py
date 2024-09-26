@@ -6,6 +6,8 @@ import argparse
 class FileCounter:
     def __init__(self, filepath: str | Path):
         self.filepath = Path(filepath).resolve()
+        if not self.filepath.exists():
+            raise FileNotFoundError(f"The file {self.filepath} does not exist.")
         with open(self.filepath, "r", encoding="utf-8") as f:
             self.file_text = f.read()
         super().__init__()
@@ -61,7 +63,11 @@ if __name__ == "__main__":
 
     if args.filepath:
         display_file = args.filepath
-        counter = FileCounter(args.filepath)
+        try:
+            counter = FileCounter(args.filepath)
+        except FileNotFoundError as e:
+            print(e)
+            sys.exit(1)
     else:
         display_file = ""
         counter = StringCounter(sys.stdin.read())   
